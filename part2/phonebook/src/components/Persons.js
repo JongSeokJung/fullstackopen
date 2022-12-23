@@ -1,7 +1,13 @@
-const Persons = (props) => {
+const Persons = ({personsList, deletePersonOf}) => {
   return (
     <div>
-      {props.personsList.map(person => <div key={person.id}>{person.name} {person.number}</div>)}
+      {personsList.map(person => {
+        return (
+          <div key={person.id}>
+            {person.name} {person.number} <button onClick={() => deletePersonOf(person)}>delete</button>
+          </div>
+        )
+      })}
     </div>
   )
 }
