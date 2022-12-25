@@ -3,6 +3,7 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonsForm'
 import Persons from './components/Persons'
 import personManagement from './services/Management'
+import { ErrorMessage, Confirmation } from './components/Notifications'
 
 const Header = ({text}) => <h2>{text}</h2>
 
@@ -12,6 +13,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterName, setFilterName] = useState('')
   const [showFilter, setShowFilter] = useState(false)
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [confirmation, setConfirmation] = useState(null)
 
   useEffect(() => {
     personManagement.getAll()
@@ -43,12 +46,14 @@ const App = () => {
     } else {
       personManagement.addPerson(newPerson)
         .then(person => setPersons(persons.concat(person)))
+      setConfirmation(`Added ${newPerson.name}`)
+      setTimeout(() => {
+        setConfirmation(null)
+      }, 2000)
     }
     setNewName("")
     setNewNumber("")
   }
-
-  
 
 
   const handleNewName = (event) => {
@@ -77,9 +82,16 @@ const App = () => {
       personManagement.deletePerson(id)
       .then(deletedPerson => {
         setPersons(persons.filter(person => person.id !== id))
+        setConfirmation(`${name} was removed from the server`)
+        setTimeout(() => {
+          setConfirmation(null)
+        }, 2000)
       })
       .catch(error => {
-        alert(`${name} was already deleted`)
+        setErrorMessage(`Information of ${name} has already been removed from server`)
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 2000)
       })
     }
   }
@@ -89,10 +101,15 @@ const App = () => {
   return (
     <div>
       <Header text="Phonebook" />
-      <Filter onSubmit={personFilter} text="filter shown with" value={filterName} onChange={handleFilterName}/>
-
+      <Confirmation message={confirmation} />
+      <ErrorMessage message={errorMessage} />
+      <Filter 
+        onSubmit={personFilter} 
+        text="filter shown with" 
+        value={filterName} 
+        onChange={handleFilterName}
+      />
       <Header text="add a new" />
-
       <PersonForm 
         onSubmit={addPerson} 
         newNameValue={newName}
