@@ -29,27 +29,31 @@ const App = () => {
       id: persons.length + 1
     }
 
-    let duplicatedId = -1
-    persons.forEach(person => {
-      if (JSON.stringify(person.name.toLowerCase()) === JSON.stringify(newPerson.name.toLowerCase())) {
-         duplicatedId = person.id;
-      }
-    })
+    const currPerson = persons.filter((person) => person.name === newName)
 
-    if (duplicatedId > 0) {
+    if (currPerson.length) {
       console.log("here")
       if (window.confirm(`${newPerson.name} is already added to phonebook, replace the old number with a new one?`)) {
-        personManagement.updatePerson(duplicatedId, newPerson).then(deletePerson => {
+        personManagement.updatePerson(currPerson[0].id, newPerson).then(deletePerson => {
           setPersons(persons.map(person => person.id !== deletePerson.id ? person : deletePerson));
         })
       }
     } else {
       personManagement.addPerson(newPerson)
-        .then(person => setPersons(persons.concat(person)))
-      setConfirmation(`Added ${newPerson.name}`)
-      setTimeout(() => {
-        setConfirmation(null)
-      }, 2000)
+        .then(person => {
+          setPersons(persons.concat(person))
+          setConfirmation(`Added ${newPerson.name}`)
+          setTimeout(() => {
+            setConfirmation(null)
+          }, 2000)
+        }).catch(error => {
+          console.log(error)
+          setErrorMessage(error.response.data.error)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 2000)
+        })
+      
     }
     setNewName("")
     setNewNumber("")

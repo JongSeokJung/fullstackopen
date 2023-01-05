@@ -1,0 +1,16 @@
+DELETE  http://localHost:3001/api/persons/63b4efa8f6eb0967c190fa32
+# Content-Type: application/json
+
+# {
+#   "name": "Jong", 
+#   "number": "4252299737"
+# }
+
+###
+POST http://localHost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "as",
+  "number": "4252299737"
+}
