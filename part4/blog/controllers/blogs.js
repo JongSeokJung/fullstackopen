@@ -9,14 +9,22 @@ blogRouter.get('/', (request, response) => {
     })
 })
 
-blogRouter.post('/', (request, response) => {
+blogRouter.post('/', (request, response, next) => {
   const blog = new Blog(request.body)
-
   blog
     .save()
     .then(result => {
       response.status(201).json(result)
     })
+    .catch(error => next(error))
+})
+
+blogRouter.delete('/:id', async (request, response, next) => {
+  try {
+    await Blog.findByIdAndDelete(request.params.id)
+  } catch(e) {
+    next(e)
+  }
 })
 
 module.exports = blogRouter
