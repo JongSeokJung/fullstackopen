@@ -219,3 +219,9 @@ describe('most blogs', () => {
       }))
   })
 })
+
+describe('delete', () => {
+  test('delete', async () => {
+
+  })
+})
